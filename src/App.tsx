@@ -1,3 +1,5 @@
+import React from 'react';
+
 import Labs from "./Labs";
 import Kanbas from "./Kanbas";
 import About from "./About";

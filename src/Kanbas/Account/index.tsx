@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { Routes, Route, Navigate } from "react-router";
 import AccountNavigation from "./Navigation";
 import Profile from "./Profile";
