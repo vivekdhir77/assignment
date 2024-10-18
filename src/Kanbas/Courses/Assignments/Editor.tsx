@@ -1,14 +1,20 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-
+import { useParams, useLocation } from "react-router";
+import { Link } from 'react-router-dom';
+import * as db from "../../Database"
 export default function AssignmentEditor() {
+  const { aid } = useParams();
+  const { cid } = useParams();
+  const assignments = db.assignments;
+  const assingment = assignments.find((ass)=> ass._id==aid);
   return (
     <div id="wd-assignments-editor" className="container mt-5">
       <form>
         <div className="mb-3 row">
           <div><label htmlFor="wd-name" className="col-form-label col-sm-2">Assignment Name</label></div>
           <div className="col-sm-10">
-            <input type="text" id="wd-name" className="form-control" value="A1" />
+            <input type="text" id="wd-name" className="form-control" value={assingment?.title+" "+aid} />
           </div>
         </div>
 
@@ -122,8 +128,8 @@ export default function AssignmentEditor() {
 
         <div className="row float-end">
           <div className="col-sm-12">
-            <button type="submit" className="btn btn-primary">Save</button>
-            <button type="button" className="btn btn-secondary ms-2">Cancel</button>
+          <Link to={`/Kanbas/Courses/${cid}/Assignments`}><button type="submit" className="btn btn-primary">Save</button></Link>
+            <Link to={`/Kanbas/Courses/${cid}/Assignments`}><button type="button" className="btn btn-secondary ms-2">Cancel</button></Link>
           </div>
         </div>
       </form>

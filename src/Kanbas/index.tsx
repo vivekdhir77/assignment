@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { Routes, Route, Navigate } from "react-router";
 import Account from "./Account";
 import Dashboard from "./Dashboard";
@@ -8,7 +7,7 @@ import Courses from "./Courses";
 import "./style.css"
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 export default function Kanbas() {
-  return (
+return (
     <div id="wd-kanbas">
             <KanbasNavigation />
       <div className="wd-main-content-offset p-3">
@@ -22,4 +21,5 @@ export default function Kanbas() {
             </Routes>
       </div>
     </div>
-);}
+  );
+}

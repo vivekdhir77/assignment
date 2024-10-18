@@ -6,7 +6,12 @@ import LessonControlButtons from '../Modules/LessonControlButtons';
 import "./index.css"
 import { FaPlus } from "react-icons/fa6";
 import { FaSearch } from 'react-icons/fa';
+import { useParams } from "react-router";
+import * as db from "../../Database";
+
 export default function Assignments() {
+  const assignments = db.assignments;
+  const {cid} = useParams()
     return (
       <div id="wd-assignments">
        <div className="d-flex justify-content-between row align-items-center mb-2">
@@ -38,47 +43,30 @@ export default function Assignments() {
         <FaPlus className="float-end"/>
       </div>
       <ul className="wd-lessons list-group rounded-0">
-        <a className="wd-assignment-link no-underline" href="#/Kanbas/Courses/1234/Assignments/123">
-          <li className="wd-lesson list-group-item p-3 ps-1">
-            <BsGripVertical className="me-2 fs-3" />
-            <span>
-              <b>A1 - ENV + HTML</b> <br />
-              <LessonControlButtons />
-              <p>
-                <span className='text-danger'>Multiple Modules</span> | <b>Not available</b> until May 6 at 12:00pm |
-                <br /> <b>Due</b> May 13 at 11:59pm | 100 pts
-              </p>
-            </span>
-          </li>
-        </a>
-
-        <a className="wd-assignment-link no-underline" href="#/Kanbas/Courses/1234/Assignments/123">
-          <li className="wd-lesson list-group-item p-3 ps-1">
-            <BsGripVertical className="me-2 fs-3" />
-            <span>
-              <b>A2 - CSS + BOOTSTRAP</b> <br />
-              <LessonControlButtons />
-              <p>
-                <span className='text-danger'>Multiple Modules</span> | <b>Not available</b> until May 12 at 12:00pm |
-                <br /> <b>Due</b> May 20 at 11:59pm | 100 pts
-              </p>
-            </span>
-          </li>
-        </a>
-
-        <a className="wd-assignment-link no-underline" href="#/Kanbas/Courses/1234/Assignments/123">
-          <li className="wd-lesson list-group-item p-3 ps-1">
-            <BsGripVertical className="me-2 fs-3" />
-            <span>
-              <b>A3 - JAVASCRIPT + REACT</b> <br />
-              <LessonControlButtons />
-              <p>
-                <span className='text-danger'>Multiple Modules</span> | <b>Not available</b> until May 20 at 12:00pm |
-                <br /> <b>Due</b> May 27 at 11:59pm | 100 pts
-              </p>
-            </span>
-          </li>
-        </a>
+       
+        {
+        assignments.filter((ass)=>ass.course===cid)
+        .map((assignment) => (
+    <a
+      key={assignment._id} 
+      className="wd-assignment-link no-underline" 
+      href={`#/Kanbas/Courses/${cid}/Assignments/${assignment._id}`}
+    >
+      <li className="wd-lesson list-group-item p-3 ps-1">
+        <BsGripVertical className="me-2 fs-3" />
+        <span>
+          <b>{assignment.title} {assignment._id}</b> <br />
+          <LessonControlButtons />
+          <p>
+            <span className='text-danger'>Multiple Modules</span> | 
+            <b>Not available</b> until May 6 at 12:00pm |
+            <br /> 
+            <b>Due</b> May 13 at 11:59pm | 100 pts
+          </p>
+        </span>
+      </li>
+    </a>
+  ))}
       </ul>
     </li>
   </ul>
