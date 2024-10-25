@@ -31,7 +31,7 @@ import { GrOverview } from "react-icons/gr";
 
 export default function CourseStatus() {
   return (
-    <div id="wd-course-status" style={{ width: "300px" }}>
+    <div id="wd-course-status" className="d-none d-xl-block" style={{ width: "300px" }}>
       <h2>Course Status</h2>
       <div className="d-flex">
         <div className="w-50 pe-1">
