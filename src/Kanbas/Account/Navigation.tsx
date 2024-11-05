@@ -1,44 +1,43 @@
-import React from 'react';
-import { Link, useLocation } from "react-router-dom";
+import React from "react";
+import { NavLink } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 export default function AccountNavigation() {
-  const location = useLocation();
-  const activeStyle = {
-    color: 'black',
-    textDecoration: 'none',
-    borderLeft: '1px solid black',
-    paddingLeft: '6px'
-  };
-  const defaultStyle = {
-    color: 'red',
-    textDecoration: 'none'
-  };
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
 
   return (
-    <div id="wd-account-navigation" style={{
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'flex-start',
-      paddingLeft: '10px'
-    }}>
-      <Link
-        to={`/Kanbas/Account/Signin`}
-        style={location.pathname === '/Kanbas/Account/Signin' ? activeStyle : defaultStyle}
-      >
-        Signin
-      </Link>
-      <Link
-        to={`/Kanbas/Account/Signup`}
-        style={location.pathname === '/Kanbas/Account/Signup' ? activeStyle : defaultStyle}
-      >
-        Signup
-      </Link>
-      <Link
-        to={`/Kanbas/Account/Profile`}
-        style={location.pathname === '/Kanbas/Account/Profile' ? activeStyle : defaultStyle}
-      >
-        Profile
-      </Link>
+    <div id="wd-account-navigation" className="wd list-group fs-5 rounded-0">
+      {!currentUser && (
+        <>
+          <NavLink
+            to="/Kanbas/Account/Signin"
+            id="wd-account-signin-link"
+            className={({ isActive }) =>
+              isActive? "list-group-item border border-0 active text-black": "list-group-item border text-danger border-0"}>
+            Signin
+          </NavLink>
+
+          <NavLink
+            to="/Kanbas/Account/Signup"
+            id="wd-account-signup-link"
+            className={({ isActive }) =>
+              isActive? "list-group-item border border-0 active text-black": "list-group-item border text-danger border-0"}>
+            Signup
+          </NavLink>
+        </>
+      )}
+
+      {currentUser && (
+        <NavLink
+          to="/Kanbas/Account/Profile"
+          id="wd-account-profile-link"
+          className={({ isActive }) =>
+            isActive
+              ? "list-group-item border border-0 active text-black"
+              : "list-group-item border text-danger border-0"}>
+          Profile
+        </NavLink>
+      )}
     </div>
   );
 }

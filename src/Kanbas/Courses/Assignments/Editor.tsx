@@ -1,137 +1,283 @@
-import React from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { useParams } from "react-router";
-import { Link } from 'react-router-dom';
-import * as db from "../../Database"
+import React from "react";
+import { useParams, Link } from "react-router-dom";
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { addAssignment, updateAssignment } from "./reducer";
+import { useNavigate } from "react-router-dom";
+
 export default function AssignmentEditor() {
-  const { aid } = useParams();
-  const { cid } = useParams();
-  const assignments = db.assignments;
-  const assingment = assignments.find((ass)=> ass._id===aid);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
+
+  const { cid, aid } = useParams();
+  const { assignments } = useSelector((state: any) => state.assignmentReducer);
+
+  const assignment = assignments.find((assignment: any) => assignment._id === aid);
+
+  const disabled = currentUser.role !== "FACULTY";
+  const [formData, setFormData] = useState({
+    name: assignment?.title || "Assignment Name",
+    course: cid,
+    description: assignment?.description || "Assignment description",
+    points: assignment?.points,
+    dueDate: assignment?.dueDate,
+    availableFrom: assignment?.availableFrom,
+    availableUntil: assignment?.availableUntil,
+  });
+  const handleChange = (e: any) => {
+    const { id, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [id]: value,
+    }));
+  };
+  const existingAssignment = assignments.find((assignment: any) => assignment._id === aid);
+  const handleSubmit = () => {
+    if (existingAssignment) {
+      dispatch(
+        updateAssignment({
+          _id: aid,
+          title: formData.name,
+          description: formData.description,
+          points: formData.points,
+          dueDate: formData.dueDate,
+          availableFrom: formData.availableFrom,
+          availableUntil: formData.availableUntil,
+          course: formData.course,
+        })
+      );
+    } else {
+      dispatch(
+        addAssignment({
+          _id: aid,
+          title: formData.name,
+          description: formData.description,
+          points: formData.points,
+          dueDate: formData.dueDate,
+          availableFrom: formData.availableFrom,
+          availableUntil: formData.availableUntil,
+          course: formData.course,
+        })
+      );
+    }
+    navigate(`/Kanbas/Courses/${cid}/Assignments`);
+  };
+
   return (
     <div id="wd-assignments-editor" className="container mt-5">
-      <form>
-        <div className="mb-3 row">
-          <div><label htmlFor="wd-name" className="col-form-label col-sm-2">Assignment Name</label></div>
-          <div className="col-sm-10">
-            <input type="text" id="wd-name" className="form-control" value={assingment?.title+" "+aid} />
+      <form onSubmit={handleSubmit}>
+        <label htmlFor="name">
+          <h3>Assignment Name</h3>
+        </label>
+        <input
+          id="name"
+          className="form-control mb-4"
+          value={formData.name}
+          defaultValue={"Assignment name "}
+          onChange={handleChange}
+          disabled={disabled}
+        />
+        <label htmlFor="description">
+          <h4>Description</h4>
+        </label>
+        <textarea
+          id="description"
+          className="form-control mb-4"
+          style={{ height: "200px" }}
+          value={formData.description}
+          defaultValue={`The assignment is available online. 
+Submit a link to the landing page of your Web application running on Netlify. 
+The landing page should include the following:
+- Your full name and section
+- Links to each of the lab assignments
+- Link to the Kanbas application
+- Links to all relevant source code repositories
+The Kanbas application should include a link to navigate back to the landing page.`}
+          onChange={handleChange}
+          disabled={disabled}
+        />
+        <div className="row mb-4">
+          <div className="col-lg-4 text-lg-end">
+            <label htmlFor="points" className="form-label">
+              Points
+            </label>
+          </div>
+          <div className="col-lg-8">
+            <input
+              id="points"
+              type="number"
+              className="form-control mb-3"
+              value={formData.points}
+              defaultValue={100}
+              onChange={handleChange}
+              disabled={disabled}
+            />
           </div>
         </div>
 
-        <div className="mb-3 row">
-          <div className="col-sm-12">
-            <p>The assignment is <a href="#">available online</a></p>
-            <p>Submit a link to the landing page of your Web application running on <a href="#">Netlify</a>.</p>
-            <ul>
-              <li>Your full name and section</li>
-              <li>Links to each of the lab assignments</li>
-              <li>Link to the <a href="#">Kanbas</a> application</li>
-              <li>Links to all relevant source code repositories</li>
-            </ul>
-            <p>The Kanbas application should include a link to navigate back to the landing page.</p>
+        <div className="row mb-4">
+          <div className="col-lg-4 text-lg-end">
+            <label htmlFor="wd-groups" className="form-label">
+              Assignment Group
+            </label>
           </div>
-        </div>
-
-        <div className="mb-3 row">
-          <label htmlFor="wd-points" className="col-form-label col-sm-2">Points</label>
-          <div className="col-sm-10">
-            <input type="number" id="wd-points" className="form-control" value={100} />
-          </div>
-        </div>
-
-        <div className="mb-3 row">
-          <label className="col-sm-2 col-form-label">Assignment Group</label>
-          <div className="col-sm-10">
-            <select className="form-select" id="wd-Group">
-              <option value="Assignments" selected>Assignments</option>
+          <div className="col-lg-8">
+            <select id="wd-groups" disabled={disabled} className="form-select mb-3">
+              <option value="1">ASSIGNMENTS</option>
+              <option value="2">LABS</option>
             </select>
           </div>
         </div>
 
-        <div className="mb-3 row">
-          <label htmlFor="wd-Grade-Type" className="col-sm-2 col-form-label">Display Grade as</label>
-          <div className="col-sm-10">
-            <select className="form-select" id="wd-Grade-Type">
-              <option value="Percentage" selected>Percentage</option>
-              <option value="Letter">Letter</option>
+        <div className="row mb-4">
+          <div className="col-lg-4 text-lg-end">
+            <label htmlFor="wd-display-grade-as" className="form-label">
+              Display Grade as
+            </label>
+          </div>
+          <div className="col-lg-8">
+            <select id="wd-display-grade-as" disabled={disabled} className="form-select mb-3">
+              <option value="1">PERCENTAGES</option>
+              <option value="2">MARKS</option>
             </select>
           </div>
         </div>
 
-        <div className="mb-3 row">
-          <label className="col-sm-2 col-form-label">Submission Type</label>
-          <div className="col-sm-10">
-            <div className="form-check">
-              <input className="form-check-input" type="checkbox" id="wd-chkbox-txt-entry" />
-              <label className="form-check-label" htmlFor="wd-chkbox-txt-entry">Text Entry</label>
-            </div>
-            <div className="form-check">
-              <input className="form-check-input" type="checkbox" id="wd-chkbox-website-url" defaultChecked />
-              <label className="form-check-label" htmlFor="wd-chkbox-website-url">Website URL</label>
-            </div>
-            <div className="form-check">
-              <input className="form-check-input" type="checkbox" id="wd-chkbox-media-rec" />
-              <label className="form-check-label" htmlFor="wd-chkbox-media-rec">Media Recordings</label>
-            </div>
-            <div className="form-check">
-              <input className="form-check-input" type="checkbox" id="wd-chkbox-student-ann" />
-              <label className="form-check-label" htmlFor="wd-chkbox-student-ann">Student Annotations</label>
-            </div>
-            <div className="form-check">
-              <input className="form-check-input" type="checkbox" id="wd-chkbox-file-uploads" />
-              <label className="form-check-label" htmlFor="wd-chkbox-file-uploads">File Uploads</label>
-            </div>
+        <div className="row mb-4">
+          <div className="col-lg-4 text-lg-end">
+            <label htmlFor="wd-submission-type" className="form-label">
+              Submission Type
+            </label>
           </div>
-        </div>
-
-        <div className="mb-3 row">
-          <label htmlFor="wd-Submission-Type" className="col-sm-2 col-form-label">Submission Type</label>
-          <div className="col-sm-10">
-            <select className="form-select" id="wd-Submission-Type">
-              <option value="Online" selected>Online</option>
-              <option value="Offline">Offline</option>
+          <div className="col-lg-8 border border-1 p-2 rounded">
+            <select id="wd-submission-type" disabled={disabled} className="form-select mb-4">
+              <option value="1">ONLINE</option>
+              <option value="2">OFFLINE</option>
             </select>
+            <p>
+              <b>Online Entry Options</b>
+            </p>
+            <div className="form-check">
+              <input
+                type="checkbox"
+                id="wd-text-entry"
+                disabled={disabled}
+                className="form-check-input"
+              />
+              <label htmlFor="wd-text-entry" className="form-check-label">
+                Text entry
+              </label>
+            </div>
+            <div className="form-check">
+              <input
+                type="checkbox"
+                id="wd-website-url"
+                disabled={disabled}
+                className="form-check-input"
+              />
+              <label htmlFor="wd-website-url" className="form-check-label">
+                Website URL
+              </label>
+            </div>
+            <div className="form-check">
+              <input
+                type="checkbox"
+                id="wd-media-recordings"
+                disabled={disabled}
+                className="form-check-input"
+              />
+              <label htmlFor="wd-media-recordings" className="form-check-label">
+                Media Recordings
+              </label>
+            </div>
+            <div className="form-check">
+              <input
+                type="checkbox"
+                id="wd-student-annotation"
+                disabled={disabled}
+                className="form-check-input"
+              />
+              <label htmlFor="wd-student-annotation" className="form-check-label">
+                Student Annotations
+              </label>
+            </div>
+            <div className="form-check">
+              <input
+                type="checkbox"
+                id="wd-file-upload"
+                disabled={disabled}
+                className="form-check-input"
+              />
+              <label htmlFor="wd-file-upload" className="form-check-label">
+                File Upload
+              </label>
+            </div>
           </div>
         </div>
 
-        <div className="mb-3 row">
-          <label htmlFor="wd-assign" className="col-sm-2 col-form-label">Assign to</label>
-          <div className="col-sm-10">
-            <input type="text" id="wd-assign" className="form-control" value="Everyone" />
+        <div className="row mb-4">
+          <div className="col-lg-4 text-lg-end">Assign</div>
+          <div className="col-lg-8 border border-2 p-2 rounded">
+            <label htmlFor="wd-assign-to" className="form-label">
+              Assign to
+            </label>
+            <input
+              type="text"
+              id="wd-assign-to"
+              className="form-control mb-4"
+              value="Everyone"
+              disabled={disabled}
+            />
+            <label htmlFor="wd-due-date" className="form-label">
+              Due Date
+            </label>
+            <input
+              type="date"
+              id="dueDate"
+              className="form-control mb-4"
+              value={formData.dueDate}
+              onChange={handleChange}
+              disabled={disabled}
+            />
+            <label htmlFor="wd-available-from" className="form-label">
+              Available from
+            </label>
+            <input
+              type="date"
+              id="availableFrom"
+              className="form-control mb-4"
+              value={formData.availableFrom}
+              onChange={handleChange}
+              disabled={disabled}
+            />
+            <label htmlFor="wd-available-until" className="form-label">
+              Available until
+            </label>
+            <input
+              type="date"
+              id="availableUntil"
+              className="form-control mb-4"
+              value={formData.availableUntil}
+              onChange={handleChange}
+              disabled={disabled}
+            />
           </div>
         </div>
-
-        <div className="mb-3 row">
-          <div><label htmlFor="wd-due" className="col-sm-2 col-form-label">Due</label></div>
-          <div className="col-sm-10">
-            <input type="date" id="wd-due" className="form-control" value="2024-05-13" />
+        {disabled ? (
+          <></>
+        ) : (
+          <div className="d-flex justify-content-end">
+            <Link to={`/Kanbas/Courses/${cid}/Assignments`}>
+              <button type="button" className="btn btn-secondary me-2">
+                Cancel
+              </button>
+            </Link>
+            <button type="submit" className="btn btn-danger" disabled={disabled}>
+              Submit
+            </button>
           </div>
-        </div>
-
-        <div className="mb-3 row">
-          <div className='d-flex justify-content-between'>
-          <label htmlFor="wd-from" className="col-sm-2 col-form-label">Available From</label>
-          <label htmlFor="wd-to" className="col-sm-2 col-form-label">Until</label>
-          </div>
-          <div className='d-flex justify-content-between'>
-
-          <div className="col-sm-4">
-            <input type="date" id="wd-from" className="form-control" value="2024-05-06" />
-          </div>
-          <div className="col-sm-4">
-            <input type="date" id="wd-to" className="form-control" />
-          </div>
-          </div>
-        </div>
-
-        <hr />
-
-        <div className="row float-end">
-          <div className="col-sm-12">
-          <Link to={`/Kanbas/Courses/${cid}/Assignments`}><button type="submit" className="btn btn-primary">Save</button></Link>
-            <Link to={`/Kanbas/Courses/${cid}/Assignments`}><button type="button" className="btn btn-secondary ms-2">Cancel</button></Link>
-          </div>
-        </div>
+        )}
       </form>
     </div>
   );

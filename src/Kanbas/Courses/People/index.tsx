@@ -1,13 +1,12 @@
-import React from 'react';
 import CoursesNavigation from "./Navigation";
-import Modules from "./Modules";
-import Home from "./Home";
-import Assignments from "./Assignments";
-import AssignmentEditor from "./Assignments/Editor";
+import Modules from "../Modules";
+import Home from "../Home";
+import Assignments from "../Assignments";
+import AssignmentEditor from "../Assignments/Editor";
 
 import { Navigate, Route, Routes, useParams, useLocation } from "react-router";
 import { FaAlignJustify } from "react-icons/fa";
-import PeopleTable from "./People/Table";
+import PeopleTable from "./Table";
 
 export default function Courses({ courses }: { courses: any[] }) {
   const { cid } = useParams();

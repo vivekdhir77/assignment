@@ -1,77 +1,70 @@
-import React from 'react';
-import { IoMdArrowDropdown } from "react-icons/io";
-import { BsGripVertical } from 'react-icons/bs';
-import LessonControlButtons from '../Modules/LessonControlButtons';
-import "./index.css"
-import { FaPlus } from "react-icons/fa6";
-import { FaSearch } from 'react-icons/fa';
-import { useParams } from "react-router";
-import * as db from "../../Database";
+import React from "react";
+import { BsGripVertical } from "react-icons/bs";
+import AssignmentsControls from "./AssignmentsControls";
+import { HiOutlinePencilAlt } from "react-icons/hi";
+import AssignmentControlButtons from "./AssignmentControlButtons";
+import ControlButtons from "./ControlButtons";
+import { Link, useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 export default function Assignments() {
-  const assignments = db.assignments;
-  const {cid} = useParams()
-    return (
-      <div id="wd-assignments">
-       <div className="d-flex justify-content-between row align-items-center mb-2">
-                <div className="col-auto">
-                    <div className="input-group">
-                        <span className="input-group-text">
-                            <FaSearch />
+  const { cid } = useParams();
+  const { assignments } = useSelector((state: any) => state.assignmentReducer);
+
+  console.log(assignments);
+
+  return (
+    <div>
+      <AssignmentsControls /><br /><br /><br /><br />
+      <ul id="wd-assignments" className="list-group rounded-0">
+        <li className="wd-assignments list-group-item p-0 mb-5 fs-5 border-gray ">
+          <div className="dropdown-toggle wd-title p-3 ps-2 bg-secondary ">
+            <BsGripVertical className="me-2 fs-3 " />
+            Assignments
+            <ControlButtons />
+          </div>
+          <ul className="wd-assignment list-group rounded-0">
+            {assignments
+              .filter((assignment: any) => assignment.course === cid)
+              .map((assignment: any) => (
+                <li className="wd-assignment list-group-item p-3 ps-1">
+                  <div className="row assignment-item py-3 align-items-center">
+                    <div className="col-md-1 d-flex align-items-center">
+                      <BsGripVertical className="me-2 fs-3" />
+                      <HiOutlinePencilAlt className="me-2 fs-3 " color="green" />
+                    </div>
+                    <div className="col-md-9">
+                      <b>
+                        <Link
+                          className="wd-assignment-link text-decoration-none text-muted"
+                          to={`/Kanbas/Courses/${cid}/Assignments/${assignment._id}/`}
+                        >
+                          {assignment.title}
+                        </Link>
+                      </b>
+                      <div className="module-info text-muted">
+                        <span className="text-danger">Multiple Modules</span> |
+                        <span>
+                          <b>
+                            Not available until {assignment.availableFrom ?? "May 6 at 12:00am"}
+                          </b>
                         </span>
-                        <input
-                            type="text" id="wd-search-assignment" className="form-control" placeholder="Search"/>
+                        |<br />
+                        <span>
+                          <b>Due</b> {assignment.dueDate ?? " May 13 at 11:59pm"}
+                        </span>
+                        |<span> {assignment.points ?? "100"} pts</span>
+                      </div>
                     </div>
-                </div>
-                <div className="col-auto float-end">
-                    <div className="btn-group" role="group">
-                        <button id="wd-add-assignment-group" className="btn btn-secondary">+ Group</button>
-                        <button id="wd-add-assignment" className="btn btn-danger">+ Assignment</button>
+                    <div className="col-md-2 text-end">
+                      <AssignmentControlButtons assignmentId={assignment._id} />
                     </div>
-                </div>
-            </div>
-        <div>
-  <ul id="wd-modules" className="list-group rounded-0">
-    <li className="wd-module list-group-item p-0 mb-5 fs-5 border-gray">
-      <div className="wd-title p-3 ps-2 bg-secondary">
-        <BsGripVertical className="me-2 fs-3" />
-        <IoMdArrowDropdown />
-        Assignments
-        <LessonControlButtons />
-        <span className="badge rounded-pill bg-secondary border border-dark float-end text-dark" style={{ marginRight: '5px' }}>40% of total</span>
-        <FaPlus className="float-end"/>
-      </div>
-      <ul className="wd-lessons list-group rounded-0">
-       
-        {
-        assignments.filter((ass)=>ass.course===cid)
-        .map((assignment) => (
-    <a
-      key={assignment._id} 
-      className="wd-assignment-link no-underline" 
-      href={`#/Kanbas/Courses/${cid}/Assignments/${assignment._id}`}
-    >
-      <li className="wd-lesson list-group-item p-3 ps-1">
-        <BsGripVertical className="me-2 fs-3" />
-        <span>
-          <b>{assignment.title} {assignment._id}</b> <br />
-          <LessonControlButtons />
-          <p>
-            <span className='text-danger'>Multiple Modules</span> | 
-            <b>Not available</b> until May 6 at 12:00pm |
-            <br /> 
-            <b>Due</b> May 13 at 11:59pm | 100 pts
-          </p>
-        </span>
-      </li>
-    </a>
-  ))}
-      </ul>
-    </li>
-  </ul>
-</div>
-
-
-      </div>
-  );}
-  
+                  </div>
+                </li>
+              ))}
+          </ul>
+        </li>
+      </ul>{" "}
+    </div>
+  );
+}
