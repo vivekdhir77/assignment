@@ -2,7 +2,7 @@ import React from 'react';
 
 import Labs from "./Labs";
 import Kanbas from "./Kanbas";
-import About from "./About";
+// import About from "./About";
 import { HashRouter, Route, Routes, Navigate } from "react-router-dom";
 function App() {
   return (

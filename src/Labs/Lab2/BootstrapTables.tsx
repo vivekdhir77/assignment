@@ -1,3 +1,4 @@
+import React from "react";
 export default function BootstrapTables(){
     return (
         <div id="wd-css-styling-tables">

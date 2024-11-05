@@ -1,3 +1,4 @@
+import React from "react";
 import { useParams } from "react-router-dom";
 import * as db from "../../Database";
 import { FaUserCircle } from "react-icons/fa";

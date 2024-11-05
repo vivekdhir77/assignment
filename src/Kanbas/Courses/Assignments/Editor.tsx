@@ -1,13 +1,13 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useParams, useLocation } from "react-router";
+import { useParams } from "react-router";
 import { Link } from 'react-router-dom';
 import * as db from "../../Database"
 export default function AssignmentEditor() {
   const { aid } = useParams();
   const { cid } = useParams();
   const assignments = db.assignments;
-  const assingment = assignments.find((ass)=> ass._id==aid);
+  const assingment = assignments.find((ass)=> ass._id===aid);
   return (
     <div id="wd-assignments-editor" className="container mt-5">
       <form>

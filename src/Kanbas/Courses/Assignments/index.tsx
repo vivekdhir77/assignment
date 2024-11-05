@@ -1,5 +1,4 @@
 import React from 'react';
-import ModulesControls from '../Modules/ModulesControls';
 import { IoMdArrowDropdown } from "react-icons/io";
 import { BsGripVertical } from 'react-icons/bs';
 import LessonControlButtons from '../Modules/LessonControlButtons';

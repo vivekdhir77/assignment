@@ -1,3 +1,4 @@
+import React from "react";
 import VariablesAndConstants from "./VariablesndConstants";
 import VariableTypes from "./VariableTypes";
 import BooleanVariables from "./BooleanVariables";
@@ -31,7 +32,10 @@ import Add from "./Add";
 import Square from "./Square";
 import Highlight from "./Highlight";
 import PathParameters from "./PathParameters";
+import { useSelector } from "react-redux";
+
 export default function Lab3() {
+  const { todos } = useSelector((state: any) => state.todosReducer);
   console.log('Hello World!');
   return(
     <div id="wd-lab3">
@@ -74,6 +78,14 @@ export default function Lab3() {
         vel nihil repellat nemo explicabo excepturi consectetur. Modi omnis minus sequi maiores, provident voluptates.
      </Highlight>
      <PathParameters/>
+     <ul className="list-group">
+        {todos.map((todo: any) => (
+          <li className="list-group-item" key={todo.id}>
+            {todo.title}
+          </li>
+        ))}
+      </ul>
+      <hr />
     </div>
   );
 }
