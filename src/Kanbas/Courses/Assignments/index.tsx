@@ -11,6 +11,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { setAssignment, deleteAssignment, setAssignments } from "./reducer";
 import * as assignmentClient from "./client";
 export default function Assignments() {
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
+  const disabled = currentUser.role !== "FACULTY";
   const { cid } = useParams();
   const intialAssignment = {
     title: "New Assignment Title",
@@ -62,7 +64,7 @@ export default function Assignments() {
                   <p><text className="text-danger">Multiple Modules</text> | <b>Not Available until</b> {assignment.unlock.split("T")[0]} at {assignment.unlock.split("T")[1]} | <b>Due</b> {assignment.due.split("T")[0]} at {assignment.due.split("T")[1]} | {assignment.points} pts</p>
                 </div>
                 <div className="position-absolute top-50 end-0 translate-middle-y">
-                  <FaTrash className="text-danger me-2" onClick={(e) => {
+                  {!disabled && <FaTrash className="text-danger me-2" onClick={(e) => {
                     e.preventDefault();
 
                     const confirmDelete = window.confirm(
@@ -71,7 +73,7 @@ export default function Assignments() {
                     if (confirmDelete) {
                       removeAssignment(assignment._id);
                     }
-                  }} />
+                  }} />}
                   <DescControlButtons />
                 </div>
                 <br /><br /><br />
