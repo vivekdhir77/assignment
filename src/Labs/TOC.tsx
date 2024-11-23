@@ -49,7 +49,12 @@ export default function TOC() {
       </li>
       <li className="nav-item">
         <a id="wd-k" href="https://github.com/vivekdhir77" className="nav-link">
-          My GitHub
+          My GitHub (front end + back end)
+        </a>
+      </li>
+      <li className="nav-item">
+        <a id="wd-k" href="https://assignment-gi68.onrender.com" className="nav-link">
+          Server Root
         </a>
       </li>
     </ul>
