@@ -1,10 +1,10 @@
 import React from "react";
 import { IoEllipsisVertical } from "react-icons/io5";
-import { BsPlus } from "react-icons/bs";
-export default function AssignmentControlButtons() {
+import GreenCheckmark from "../Modules/GreenCheckmark";
+export default function DescControlButtons() {
   return (
     <div className="float-end">
-      <BsPlus className="fs-2" />
+      <GreenCheckmark />
       <IoEllipsisVertical className="fs-4" />
     </div>
 );}

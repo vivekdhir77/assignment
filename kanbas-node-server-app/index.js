@@ -13,7 +13,7 @@ const app = express();
 app.use(express.json());
 app.use(cors({
     credentials: true,
-    origin: "https://a5--saisiddharthavivekdhirrangojua1.netlify.app/" || "http://localhost:3000",
+    origin: process.env.NETLIFY_URL || "http://localhost:3000",
 }));
 const sessionOptions = {
     secret: process.env.SESSION_SECRET || "kanbas",

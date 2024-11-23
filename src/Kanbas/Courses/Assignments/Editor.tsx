@@ -1,72 +1,58 @@
-import React from "react";
-import { useParams, Link } from "react-router-dom";
-import { useState } from "react";
+import React, { useState } from "react";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { addAssignment, updateAssignment } from "./reducer";
-import { useNavigate } from "react-router-dom";
 
 export default function AssignmentEditor() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { currentUser } = useSelector((state: any) => state.accountReducer);
-
   const { cid, aid } = useParams();
   const { assignments } = useSelector((state: any) => state.assignmentReducer);
 
-  const assignment = assignments.find((assignment: any) => assignment._id === aid);
+  const assignment = assignments.find((a: any) => a._id === aid);
 
   const disabled = currentUser.role !== "FACULTY";
   const [formData, setFormData] = useState({
     name: assignment?.title || "Assignment Name",
     course: cid,
     description: assignment?.description || "Assignment description",
-    points: assignment?.points,
-    dueDate: assignment?.dueDate,
-    availableFrom: assignment?.availableFrom,
-    availableUntil: assignment?.availableUntil,
+    points: assignment?.points || 100,
+    dueDate: assignment?.dueDate || "",
+    availableFrom: assignment?.availableFrom || "",
+    availableUntil: assignment?.availableUntil || "",
   });
-  const handleChange = (e: any) => {
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { id, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [id]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [id]: value }));
   };
-  const existingAssignment = assignments.find((assignment: any) => assignment._id === aid);
+
   const handleSubmit = () => {
-    if (existingAssignment) {
-      dispatch(
-        updateAssignment({
-          _id: aid,
-          title: formData.name,
-          description: formData.description,
-          points: formData.points,
-          dueDate: formData.dueDate,
-          availableFrom: formData.availableFrom,
-          availableUntil: formData.availableUntil,
-          course: formData.course,
-        })
-      );
+    const payload = {
+      _id: aid,
+      title: formData.name,
+      description: formData.description,
+      points: formData.points,
+      dueDate: formData.dueDate,
+      availableFrom: formData.availableFrom,
+      availableUntil: formData.availableUntil,
+      course: formData.course,
+    };
+
+    if (assignment) {
+      dispatch(updateAssignment(payload));
     } else {
-      dispatch(
-        addAssignment({
-          _id: aid,
-          title: formData.name,
-          description: formData.description,
-          points: formData.points,
-          dueDate: formData.dueDate,
-          availableFrom: formData.availableFrom,
-          availableUntil: formData.availableUntil,
-          course: formData.course,
-        })
-      );
+      dispatch(addAssignment(payload));
     }
+
     navigate(`/Kanbas/Courses/${cid}/Assignments`);
   };
 
   return (
     <div id="wd-assignments-editor" className="container mt-5">
       <form onSubmit={handleSubmit}>
+        {/* Assignment Name */}
         <label htmlFor="name">
           <h3>Assignment Name</h3>
         </label>
@@ -74,10 +60,11 @@ export default function AssignmentEditor() {
           id="name"
           className="form-control mb-4"
           value={formData.name}
-          defaultValue={"Assignment name "}
           onChange={handleChange}
           disabled={disabled}
         />
+
+        {/* Description */}
         <label htmlFor="description">
           <h4>Description</h4>
         </label>
@@ -86,152 +73,86 @@ export default function AssignmentEditor() {
           className="form-control mb-4"
           style={{ height: "200px" }}
           value={formData.description}
-          defaultValue={`The assignment is available online. 
-Submit a link to the landing page of your Web application running on Netlify. 
-The landing page should include the following:
-- Your full name and section
-- Links to each of the lab assignments
-- Link to the Kanbas application
-- Links to all relevant source code repositories
-The Kanbas application should include a link to navigate back to the landing page.`}
           onChange={handleChange}
           disabled={disabled}
         />
+
+        {/* Points */}
         <div className="row mb-4">
-          <div className="col-lg-4 text-lg-end">
-            <label htmlFor="points" className="form-label">
-              Points
-            </label>
-          </div>
+          <label htmlFor="points" className="col-lg-4 text-lg-end">
+            Points
+          </label>
           <div className="col-lg-8">
             <input
               id="points"
               type="number"
-              className="form-control mb-3"
+              className="form-control"
               value={formData.points}
-              defaultValue={100}
               onChange={handleChange}
               disabled={disabled}
             />
           </div>
         </div>
 
+        {/* Assignment Group */}
         <div className="row mb-4">
-          <div className="col-lg-4 text-lg-end">
-            <label htmlFor="wd-groups" className="form-label">
-              Assignment Group
-            </label>
-          </div>
+          <label htmlFor="wd-groups" className="col-lg-4 text-lg-end">
+            Assignment Group
+          </label>
           <div className="col-lg-8">
-            <select id="wd-groups" disabled={disabled} className="form-select mb-3">
+            <select id="wd-groups" className="form-select" disabled={disabled}>
               <option value="1">ASSIGNMENTS</option>
               <option value="2">LABS</option>
             </select>
           </div>
         </div>
 
+        {/* Display Grade */}
         <div className="row mb-4">
-          <div className="col-lg-4 text-lg-end">
-            <label htmlFor="wd-display-grade-as" className="form-label">
-              Display Grade as
-            </label>
-          </div>
+          <label htmlFor="wd-display-grade-as" className="col-lg-4 text-lg-end">
+            Display Grade as
+          </label>
           <div className="col-lg-8">
-            <select id="wd-display-grade-as" disabled={disabled} className="form-select mb-3">
+            <select id="wd-display-grade-as" className="form-select" disabled={disabled}>
               <option value="1">PERCENTAGES</option>
               <option value="2">MARKS</option>
             </select>
           </div>
         </div>
 
+        {/* Submission Type */}
         <div className="row mb-4">
-          <div className="col-lg-4 text-lg-end">
-            <label htmlFor="wd-submission-type" className="form-label">
-              Submission Type
-            </label>
-          </div>
+          <label htmlFor="wd-submission-type" className="col-lg-4 text-lg-end">
+            Submission Type
+          </label>
           <div className="col-lg-8 border border-1 p-2 rounded">
-            <select id="wd-submission-type" disabled={disabled} className="form-select mb-4">
+            <select id="wd-submission-type" className="form-select mb-4" disabled={disabled}>
               <option value="1">ONLINE</option>
               <option value="2">OFFLINE</option>
             </select>
-            <p>
-              <b>Online Entry Options</b>
-            </p>
-            <div className="form-check">
-              <input
-                type="checkbox"
-                id="wd-text-entry"
-                disabled={disabled}
-                className="form-check-input"
-              />
-              <label htmlFor="wd-text-entry" className="form-check-label">
-                Text entry
-              </label>
-            </div>
-            <div className="form-check">
-              <input
-                type="checkbox"
-                id="wd-website-url"
-                disabled={disabled}
-                className="form-check-input"
-              />
-              <label htmlFor="wd-website-url" className="form-check-label">
-                Website URL
-              </label>
-            </div>
-            <div className="form-check">
-              <input
-                type="checkbox"
-                id="wd-media-recordings"
-                disabled={disabled}
-                className="form-check-input"
-              />
-              <label htmlFor="wd-media-recordings" className="form-check-label">
-                Media Recordings
-              </label>
-            </div>
-            <div className="form-check">
-              <input
-                type="checkbox"
-                id="wd-student-annotation"
-                disabled={disabled}
-                className="form-check-input"
-              />
-              <label htmlFor="wd-student-annotation" className="form-check-label">
-                Student Annotations
-              </label>
-            </div>
-            <div className="form-check">
-              <input
-                type="checkbox"
-                id="wd-file-upload"
-                disabled={disabled}
-                className="form-check-input"
-              />
-              <label htmlFor="wd-file-upload" className="form-check-label">
-                File Upload
-              </label>
-            </div>
+            <p><b>Online Entry Options</b></p>
+            {["Text entry", "Website URL", "Media Recordings", "Student Annotations", "File Upload"].map((option, index) => (
+              <div className="form-check" key={index}>
+                <input
+                  type="checkbox"
+                  id={`wd-${option.toLowerCase().replace(" ", "-")}`}
+                  className="form-check-input"
+                  disabled={disabled}
+                />
+                <label className="form-check-label">{option}</label>
+              </div>
+            ))}
           </div>
         </div>
 
+        {/* Assignment Dates */}
         <div className="row mb-4">
           <div className="col-lg-4 text-lg-end">Assign</div>
           <div className="col-lg-8 border border-2 p-2 rounded">
-            <label htmlFor="wd-assign-to" className="form-label">
-              Assign to
-            </label>
-            <input
-              type="text"
-              id="wd-assign-to"
-              className="form-control mb-4"
-              value="Everyone"
-              disabled={disabled}
-            />
-            <label htmlFor="wd-due-date" className="form-label">
-              Due Date
-            </label>
+            <label htmlFor="wd-assign-to" className="form-label">Assign to</label>
+            <input id="wd-assign-to" className="form-control mb-4" value="Everyone" disabled />
+
+            <label htmlFor="dueDate" className="form-label">Due Date</label>
             <input
               type="date"
               id="dueDate"
@@ -240,9 +161,8 @@ The Kanbas application should include a link to navigate back to the landing pag
               onChange={handleChange}
               disabled={disabled}
             />
-            <label htmlFor="wd-available-from" className="form-label">
-              Available from
-            </label>
+
+            <label htmlFor="availableFrom" className="form-label">Available from</label>
             <input
               type="date"
               id="availableFrom"
@@ -251,9 +171,8 @@ The Kanbas application should include a link to navigate back to the landing pag
               onChange={handleChange}
               disabled={disabled}
             />
-            <label htmlFor="wd-available-until" className="form-label">
-              Available until
-            </label>
+
+            <label htmlFor="availableUntil" className="form-label">Available until</label>
             <input
               type="date"
               id="availableUntil"
@@ -264,18 +183,14 @@ The Kanbas application should include a link to navigate back to the landing pag
             />
           </div>
         </div>
-        {disabled ? (
-          <></>
-        ) : (
+
+        {/* Buttons */}
+        {!disabled && (
           <div className="d-flex justify-content-end">
             <Link to={`/Kanbas/Courses/${cid}/Assignments`}>
-              <button type="button" className="btn btn-secondary me-2">
-                Cancel
-              </button>
+              <button type="button" className="btn btn-secondary me-2">Cancel</button>
             </Link>
-            <button type="submit" className="btn btn-danger" disabled={disabled}>
-              Submit
-            </button>
+            <button type="submit" className="btn btn-danger">Submit</button>
           </div>
         )}
       </form>
