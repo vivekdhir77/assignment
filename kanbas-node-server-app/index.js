@@ -26,6 +26,14 @@ const sessionOptions = {
 //     resave: false,
 //     saveUninitialized: false,
 //   };
+
+const cors = require('cors')
+const corsOption = {
+    origin: ['https://a5--saisiddharthavivekdhirrangojua1.netlify.app/'],
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+}
+app.use(cors(corsOption));
   
 if (process.env.NODE_ENV !== "development") {
     sessionOptions.proxy = true;
