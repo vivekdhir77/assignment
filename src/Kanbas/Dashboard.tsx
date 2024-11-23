@@ -3,7 +3,8 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { unenrollCourse, enrollCourse } from "./EnrollmentReducer";
-
+import { fetchAllCourses } from "./Courses/client";
+import axios from "axios";
 export default function Dashboard({
   courses,
   course,
@@ -23,7 +24,31 @@ export default function Dashboard({
   const { enrollments } = useSelector((state: any) => state.enrollmentReducer);
   const dispatch = useDispatch();
   const isStudent = currentUser.role === "STUDENT";
+  const [allCourses, setAllCourses] = useState([]); // State to store courses
+
+
   const [displayCourses, setDisplayCourses] = useState(false);
+
+  const REMOTE_SERVER = process.env.REACT_APP_REMOTE_SERVER;
+const COURSES_API = `${REMOTE_SERVER}/api/courses`;
+
+  // Function to fetch courses
+  const fetchCourses = async () => {
+    try {
+      const { data } = await axios.get(COURSES_API);
+      setAllCourses(data); // Update state with the fetched courses
+    } catch (error) {
+      console.error("Error fetching courses:", error);
+      setAllCourses([]); // Fallback to empty array in case of error
+    }
+  };
+
+  useEffect(() => {
+    fetchCourses();
+  }, []); 
+
+
+
   const [coursesMap, setCoursesMap] = useState(
     courses.filter((course) =>
       enrollments.some(
@@ -40,31 +65,25 @@ export default function Dashboard({
     setDisplayCourses((prevDisplayCourses) => {
       const newDisplayCourses = !prevDisplayCourses;
       if (newDisplayCourses) {
-        setCoursesMap(courses);
+        setCoursesMap(allCourses);
       } else {
-        setCoursesMap(courses.filter((course) =>
-            enrollments.some(
-              (enrollment: any) =>
-                enrollment.user === currentUser._id && enrollment.course === course._id
-            )
-          )
-        );
+        setCoursesMap(courses);
       }
 
       return newDisplayCourses;
     });
   };
-  useEffect(() => {
-    const updatedCoursesMap = displayCourses
-      ? courses
-      : courses.filter((course) =>
-          enrollments.some(
-            (enrollment: any) =>
-              enrollment.user === currentUser._id && enrollment.course === course._id
-          )
-        );
-    setCoursesMap(updatedCoursesMap);
-  }, [courses, enrollments, displayCourses, currentUser._id]);
+  // useEffect(() => {
+  //   const updatedCoursesMap = displayCourses
+  //     ? courses
+  //     : courses.filter((course) =>
+  //         enrollments.some(
+  //           (enrollment: any) =>
+  //             enrollment.user === currentUser._id && enrollment.course === course._id
+  //         )
+  //       );
+  //   setCoursesMap(updatedCoursesMap);
+  // }, [courses, enrollments, displayCourses, currentUser._id]);
 
   return (
     <div id="wd-dashboard">

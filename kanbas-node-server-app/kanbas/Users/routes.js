@@ -50,6 +50,11 @@ export default function UserRoutes(app) {
         req.session.destroy();
         res.sendStatus(200);
     };
+    // const signout = (req, res) => {
+    //     currentUser = null;
+    //     res.sendStatus(200);
+    //   };
+    
     const findCoursesForEnrolledUser = (req, res) => {
         let { userId } = req.params;
         if (userId === "current") {

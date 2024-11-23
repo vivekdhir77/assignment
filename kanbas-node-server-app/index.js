@@ -8,7 +8,7 @@ import CourseRoutes from "./kanbas/Courses/routes.js";
 import ModuleRoutes from "./kanbas/Modules/routes.js";
 import EnrollmentRoutes from './kanbas/Enrollments/routes.js';
 import AssignmentRoutes from './kanbas/Assignments/routes.js';
-// import "dotenv/config";
+import "dotenv/config";
 const app = express();
 app.use(express.json());
 app.use(cors({
@@ -20,6 +20,13 @@ const sessionOptions = {
     resave: false,
     saveUninitialized: false,
 };
+
+// const sessionOptions = {
+//     secret: "any string",
+//     resave: false,
+//     saveUninitialized: false,
+//   };
+  
 if (process.env.NODE_ENV !== "development") {
     sessionOptions.proxy = true;
     sessionOptions.cookie = {
