@@ -27,7 +27,7 @@ const sessionOptions = {
 //     saveUninitialized: false,
 //   };
 
-const cors = require('cors')
+// const cors = require('cors')
 const corsOption = {
     origin: ['https://a5--saisiddharthavivekdhirrangojua1.netlify.app/'],
     credentials: true,
