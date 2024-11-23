@@ -147,9 +147,9 @@ export default function Dashboard({
   const handleDeleteCourse = (e: React.MouseEvent, courseId: string) => {
     e.preventDefault();
     e.stopPropagation();
-    if (window.confirm("Are you sure you want to delete this course?")) {
+    // if (window.confirm("Are you sure you want to delete this course?")) {
       deleteCourse(courseId);
-    }
+    // }
   };
 
   const handleEditCourse = (e: React.MouseEvent, courseToEdit: any) => {
