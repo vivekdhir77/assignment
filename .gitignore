@@ -2,7 +2,6 @@
 
 # dependencies
 /node_modules
-kanbas-node-server-app/node_modules
 /.pnp
 .pnp.js
 
