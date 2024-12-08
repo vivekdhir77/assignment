@@ -31,7 +31,7 @@ import Labs from "./Labs";
 import { HashRouter, Route, Routes, Navigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
-import store from "./Kanbas/Store";
+import store from "./Kanbas/store";
 import { Provider } from "react-redux";
 
 function App() {
