@@ -3,9 +3,6 @@ import { BsPlusLg } from "react-icons/bs";
 import { CiSearch } from "react-icons/ci";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import IndividualAssignment from "./IndividualAssignment";
-import { setAssignments,addAssignment } from "./reducer";
-import * as coursesClient from "../client";
 import { useDispatch } from "react-redux";
 
 export default function AssignmentSearch() {
@@ -15,7 +12,6 @@ export default function AssignmentSearch() {
   const { cid } = useParams();
 
   const handleAddAssignment = () => {
-    // Navigate to the AssignmentEditor without an aid
     navigate(`/Kanbas/Courses/${cid}/Assignments/new`);
   };
 
@@ -38,7 +34,6 @@ export default function AssignmentSearch() {
         />
       </div>
       <div className="float-end">
-        {/* Show Assignment and Group buttons only for faculty */}
         {currentUser.role === "FACULTY" && (
           <>
             <button

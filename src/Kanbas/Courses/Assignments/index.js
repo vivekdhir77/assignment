@@ -9,7 +9,6 @@ import { useSelector,useDispatch } from "react-redux";
 import IndividualAssignment from "./IndividualAssignment";
 import { setAssignments } from "./reducer";
 import * as coursesClient from "../client";
-import { fetchAssignments } from "./reducer";
 
 export default function Assignments() {
   const dispatch = useDispatch();
@@ -21,9 +20,31 @@ export default function Assignments() {
     dispatch(setAssignments(assignments));
   }
 
+  // const fetchModules = async () => {
+  //   const modules = await coursesClient.findModulesForCourse(cid);
+  //   dispatch(setModules(modules));
+  // };
+
+  const formatDate = (isoDate) => {
+    if (!isoDate) return "N/A"; // Handle empty or invalid dates
+    const date = new Date(isoDate);
+    return new Intl.DateTimeFormat("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+    }).format(date);
+  };
+
   useEffect(() => {
     fetchAllAssignments();
   }, []);
+
+  // useEffect(() => {
+  //   dispatch(fetchAssignments(cid));
+  // }, [dispatch, cid]);
+
   return (
     <div className="me-3">
       <AssignmentSearch />
@@ -45,7 +66,7 @@ export default function Assignments() {
                     <BsGripVertical className="me-2 fs-3" />
                     <MdOutlineAssignment className="me-3 text-success" />
                     <span>
-                      {currentUser.role === "FACULTY" ? (
+                      {/* {currentUser.role === "FACULTY" ? (
                         <a
                           className="wd-assignment-link text-dark text-decoration-none fw-bold"
                           href={`#/Kanbas/Courses/${cid}/Assignments/${assignment._id}`}
@@ -54,17 +75,23 @@ export default function Assignments() {
                         </a>
                       ) : (
                         <span className="text-dark fw-bold">{assignment.title}</span> // Display title as plain text for non-faculty
-                      )}
+                      )} */}
+                      <a
+                          className="wd-assignment-link text-dark text-decoration-none fw-bold"
+                          href={`#/Kanbas/Courses/${cid}/Assignments/${assignment._id}`}
+                        >
+                          {assignment.title}
+                        </a>
                       <br />
                       <span className="text-danger">Multiple Modules</span> |
-                      <b> Not available until</b> {assignment.notAvailableUntil} |{" "}
-                      <b>Due</b> {assignment.due} | {assignment.points} pts
-                    </span>
-                    <span className="ms-auto">
-                      {currentUser.role === "FACULTY" && (
-                        <IndividualAssignment assignmentId={assignment._id} />
-                      )} 
-                    </span>
+                    <b> Not available until</b> {formatDate(assignment.notAvailableUntil)} |{" "}
+                    <b>Due</b> {formatDate(assignment.due)} | {assignment.points} pts
+                  </span>
+                  <span className="ms-auto">
+                    {currentUser.role === "FACULTY" && (
+                      <IndividualAssignment assignmentId={assignment._id} />
+                    )}
+                  </span>
                   </div>
                 </li>
               ))}

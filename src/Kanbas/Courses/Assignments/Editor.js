@@ -11,6 +11,9 @@ export default function AssignmentEditor() {
   const { cid, aid } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const userRole = useSelector((state) => state.accountReducer.role);
+  console.log(userRole);
+  const isFaculty = userRole === "faculty";
 
   const assignments = useSelector((state) => state.assignmentReducer.assignments);
 
@@ -27,7 +30,10 @@ export default function AssignmentEditor() {
     }
   };
 
+  // Check if editing an existing assignment
   let existingAssignment = assignments.find((assignment) => assignment._id === aid) || null;
+
+  // Initialize formData
   const [formData, setFormData] = useState({
     _id: existingAssignment ? existingAssignment._id : `A00${assignments.length + 1}`,
     title: existingAssignment ? existingAssignment.title : "",
@@ -47,12 +53,13 @@ export default function AssignmentEditor() {
     }));
   };
 
+  // Reset formData when `aid` changes or if there's no existingAssignment match
   useEffect(() => {
     if (existingAssignment) {
-        setFormData(existingAssignment);
+        setFormData(existingAssignment); // Load existing assignment data
     } else {
         setFormData({
-            _id: `A00${assignments.length + 1}`,
+            _id: `A00${assignments.length + 1}`, // New assignment ID
             title: "",
             description: "",
             points: 0,
@@ -79,6 +86,7 @@ export default function AssignmentEditor() {
     if (existingAssignment) {
       await saveAssignment({ ...formData, editing: false });;
     } else {
+      // If adding new, dispatch addAssignment
       await handleAddAssignment();
     }
 
@@ -97,6 +105,7 @@ export default function AssignmentEditor() {
         className="form-control mb-3" 
         onChange={handleChange} 
         required 
+        disabled={!isFaculty}
       />
 
       <div className="form-group mb-3">
@@ -110,6 +119,7 @@ export default function AssignmentEditor() {
           value={formData.description} 
           onChange={handleChange} 
           required 
+          disabled={!isFaculty}
         />
       </div>
 
@@ -122,6 +132,7 @@ export default function AssignmentEditor() {
           className="form-control mb-3" 
           onChange={handleChange} 
           required 
+          disabled={!isFaculty}
         />
       </div>
 
@@ -148,6 +159,7 @@ export default function AssignmentEditor() {
             className="form-control mb-3" 
             value={formData.submissionType} 
             onChange={handleChange} 
+            disabled={!isFaculty}
           >
             <option value="Online">Online</option>
             <option value="In Person">On Paper</option>
@@ -162,6 +174,7 @@ export default function AssignmentEditor() {
                   type="checkbox" 
                   id="textEntry" 
                   defaultChecked 
+                  disabled={!isFaculty}
                 />
                 <label className="form-check-label" htmlFor="textEntry">
                   Text Entry
@@ -172,6 +185,7 @@ export default function AssignmentEditor() {
                   className="form-check-input" 
                   type="checkbox" 
                   id="websiteURL" 
+                  disabled={!isFaculty}
                 />
                 <label className="form-check-label" htmlFor="websiteURL">
                   Website URL
@@ -182,6 +196,7 @@ export default function AssignmentEditor() {
                   className="form-check-input" 
                   type="checkbox" 
                   id="mediaRecordings" 
+                  disabled={!isFaculty}
                 />
                 <label className="form-check-label" htmlFor="mediaRecordings">
                   Media Recordings
@@ -192,6 +207,7 @@ export default function AssignmentEditor() {
                   className="form-check-input" 
                   type="checkbox" 
                   id="fileUpload" 
+                  disabled={!isFaculty}
                 />
                 <label className="form-check-label" htmlFor="fileUpload">
                   File Uploads
@@ -212,6 +228,7 @@ export default function AssignmentEditor() {
             className="form-control"
             onChange={handleChange}
             required
+            disabled={!isFaculty}
           />
         </div>
 
@@ -223,18 +240,19 @@ export default function AssignmentEditor() {
             value={formData.notAvailableUntil || ''}
             className="form-control"
             onChange={handleChange}
+            disabled={!isFaculty}
           />
         </div>
       </div>
 
       <hr />
 
-      <div className="d-flex justify-content-end">
+      {isFaculty && <div className="d-flex justify-content-end">
         <Link to={`/Kanbas/Courses/${cid}/Assignments`}>
           <button type="button" className="btn btn-secondary me-2">Cancel</button>
         </Link>
         <button type="button" className="btn btn-success" onClick={handleSave}>Save</button>
-      </div>
+      </div>}
     </div>
   );
 }

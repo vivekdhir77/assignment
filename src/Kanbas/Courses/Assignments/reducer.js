@@ -2,7 +2,7 @@ import React from "react";
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  assignments: [], // Initial assignments from assignments.json
+  assignments: [], 
 };
 
 const assignmentsSlice = createSlice({

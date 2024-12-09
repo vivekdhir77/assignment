@@ -24,7 +24,7 @@ export default function KanbasNavigation() {
       <a
         id="wd-neu-link"
         target="_blank"
-        rel="noreferrer" // Add rel="noreferrer" here
+        rel="noreferrer"
         href="https://www.northeastern.edu/"
         className="list-group-item bg-black border-0 text-center"
       >
