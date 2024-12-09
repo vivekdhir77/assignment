@@ -1,7 +1,6 @@
-import React from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { setCurrentUser } from "./reducer";
 import * as client from "./client";
 export default function Profile() {
@@ -24,14 +23,15 @@ export default function Profile() {
   };
   useEffect(() => {
     fetchProfile();
-  }, []);
+  }, [currentUser]);
+
   return (
     <div id="wd-profile-screen">
       <h3>Profile</h3>
       {profile && (
         <div>
           <input
-            defaultValue={profile.username}
+            value={profile.username}
             id="wd-username"
             className="form-control mb-2"
             onChange={(e) =>
@@ -39,7 +39,7 @@ export default function Profile() {
             }
           />
           <input
-            defaultValue={profile.password}
+            value={profile.password}
             id="wd-password"
             className="form-control mb-2"
             onChange={(e) =>
@@ -47,7 +47,7 @@ export default function Profile() {
             }
           />
           <input
-            defaultValue={profile.firstName}
+            value={profile.firstName}
             id="wd-firstname"
             className="form-control mb-2"
             onChange={(e) =>
@@ -55,7 +55,7 @@ export default function Profile() {
             }
           />
           <input
-            defaultValue={profile.lastName}
+            value={profile.lastName}
             id="wd-lastname"
             className="form-control mb-2"
             onChange={(e) =>
@@ -63,26 +63,27 @@ export default function Profile() {
             }
           />
           <input
-            defaultValue={profile.dob}
+            value={profile.dob}
             id="wd-dob"
             className="form-control mb-2"
             onChange={(e) => setProfile({ ...profile, dob: e.target.value })}
             type="date"
           />
           <input
-            defaultValue={profile.email}
+            value={profile.email}
             id="wd-email"
             className="form-control mb-2"
             onChange={(e) => setProfile({ ...profile, email: e.target.value })}
           />
           <select
+            value={profile.role} // Controlled component for role
             onChange={(e) => setProfile({ ...profile, role: e.target.value })}
             className="form-control mb-2"
             id="wd-role"
           >
-            <option value="USER">User</option>{" "}
+            <option value="USER">User</option>
             <option value="ADMIN">Admin</option>
-            <option value="FACULTY">Faculty</option>{" "}
+            <option value="FACULTY">Faculty</option>
             <option value="STUDENT">Student</option>
           </select>
           <button

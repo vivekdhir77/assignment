@@ -31,7 +31,7 @@ export default function CoursePeople(){
           {users.map((user) => (
               <tr key={user._id}>
                 <td className="wd-full-name text-nowrap">
-                <Link to={`/Kanbas/Account/Users/${user._id}`} className="text-decoration-none">
+                <Link className="text-decoration-none">
                 <FaUserCircle className="me-2 fs-1 text-secondary" />
                   <span className="wd-first-name">{user.firstName} </span>
                   <span className="wd-last-name">{user.lastName}</span>
