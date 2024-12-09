@@ -1,6 +1,6 @@
 import courses from "./courses.js";
 import modules from "./modules.js";
-import users from "./users.js";
-import enrollments from "./enrollments.js";
 import assignments from "./assignments.js";
-export default {  courses, modules, users, enrollments, assignments  };
+import enrollments from './enrollments.js';
+import users from './users.js';
+export default { courses, modules, assignments, users, enrollments };
